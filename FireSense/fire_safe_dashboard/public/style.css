@@ -1,0 +1,545 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* =========================================
+   1. GLOBAL VARIABLES & DESIGN SYSTEM
+   ========================================= */
+:root {
+    /* Color Palette */
+    --bg-dark: #120905;
+    --brand-primary: #ff5e00;
+    --brand-secondary: #cc3300;
+    --brand-accent: #ff9900;
+    --error-color: #ff3b30;
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.4);
+    
+    /* Glassmorphism Constants */
+    --glass-bg: rgba(20, 10, 5, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-highlight: rgba(255, 255, 255, 0.05);
+    --glass-shadow: 0 45px 100px rgba(0, 0, 0, 0.8);
+    --glass-blur: 45px;
+
+    /* Easings for Premium Feel */
+    --ease-spring: cubic-bezier(0.43, 0.13, 0.23, 0.96);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    
+    /* Timings */
+    --transition-fast: 0.3s;
+    --transition-medium: 0.5s;
+    --transition-slow: 0.8s;
+}
+
+/* =========================================
+   2. RESET & BASE
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(255, 94, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 50% 100%, rgba(204, 51, 0, 0.05) 0%, transparent 50%);
+    overflow: hidden;
+    position: relative;
+    perspective: 1000px; /* Required for 3D tilts */
+}
+
+/* Base Ambient Noise Overlay */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.03"/%3E%3C/svg%3E');
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* =========================================
+   3. THERMAL ORANGE BACKGROUND SHAPES
+   ========================================= */
+.bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px); /* Hardware accelerated blur */
+    z-index: -1;
+    will-change: transform;
+    animation: floatingOrbs 20s infinite alternate var(--ease-in-out-circ);
+}
+
+.circle-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--brand-primary), #662500);
+    top: -150px; left: -5%;
+    animation-delay: 0s;
+    opacity: 0.7;
+}
+
+.circle-2 {
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, var(--brand-accent), #4d2e00);
+    bottom: -300px; right: -200px;
+    animation-delay: -5s;
+    animation-duration: 25s;
+    opacity: 0.6;
+}
+
+.circle-3 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--brand-secondary), #330c00);
+    bottom: 20%; left: 5%;
+    animation-delay: -10s;
+    animation-duration: 18s;
+    mix-blend-mode: screen;
+}
+
+.blob-1 {
+    width: 1000px; height: 1000px;
+    background: radial-gradient(circle, #ff3300, #1a0500);
+    top: -400px; right: -5%;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    animation: morphBlob 15s infinite alternate linear, floatingOrbs 30s infinite alternate;
+    opacity: 0.5;
+}
+
+/* =========================================
+   4. ULTRA-CLEAN GLASS PANEL
+   ========================================= */
+.glass-panel {
+    width: 720px;
+    max-width: 92%;
+    padding: 85px 70px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 
+        var(--glass-shadow), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.15),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+    border-radius: 70px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-style: preserve-3d;
+    animation: panelEntrance 1.2s var(--ease-out-expo) forwards;
+    overflow: hidden;
+}
+
+/* Glass Reflection Sweep Overlay */
+.glass-panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -150%;
+    width: 50%; height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.08),
+        transparent
+    );
+    transform: skewX(-25deg);
+    animation: glassSweep 8s infinite var(--ease-spring);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Subtle inner glow */
+.glass-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 40px;
+    box-shadow: inset 0 0 40px rgba(255, 94, 0, 0.05);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* =========================================
+   5. SCHOOL BRANDING
+   ========================================= */
+.branding {
+    text-align: center;
+    margin-bottom: 55px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.logo-circle {
+    width: 130px; height: 130px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 10, 5, 0.9));
+    border: 2px solid rgba(255, 94, 0, 0.4);
+    border-radius: 50%;
+    margin: 0 auto 30px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 
+        0 0 40px rgba(255, 94, 0, 0.15),
+        inset 0 0 20px rgba(255, 94, 0, 0.2);
+    position: relative;
+    transition: transform var(--transition-medium) var(--ease-spring), box-shadow var(--transition-fast);
+}
+
+.logo-circle::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, var(--brand-primary), transparent 40%);
+    animation: borderSpin 4s linear infinite;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.logo-circle:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 15px 45px rgba(255, 94, 0, 0.3);
+}
+
+.logo-circle:hover::before {
+    opacity: 1;
+}
+
+.shield-icon { 
+    width: 65px; height: 65px;
+    filter: drop-shadow(0 0 10px rgba(255, 94, 0, 0.5));
+    transition: filter var(--transition-fast);
+}
+
+.logo-circle:hover .shield-icon {
+    filter: drop-shadow(0 0 20px rgba(255, 153, 0, 0.8));
+}
+
+h2 {
+    color: var(--text-main);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to right, #ffffff, #ffb380);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--brand-accent);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+/* =========================================
+   6. LOGIN FORM INPUTS
+   ========================================= */
+.login-container, form { 
+    width: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    position: relative;
+    z-index: 10;
+}
+
+.input-group {
+    width: 100%; 
+    height: 80px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50px;
+    display: flex; 
+    align-items: center;
+    padding: 0 35px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all var(--transition-fast) var(--ease-spring);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect on input group */
+.input-group:hover {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Focus effects */
+.input-group:focus-within {
+    border-color: var(--brand-primary);
+    background: rgba(255, 94, 0, 0.03);
+    box-shadow: 
+        0 0 30px rgba(255, 94, 0, 0.15),
+        inset 0 0 15px rgba(255, 94, 0, 0.05);
+    transform: scale(1.02);
+}
+
+/* Animated bottom border on focus */
+.input-group::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 2px;
+    background: var(--brand-primary);
+    transition: width var(--transition-fast) var(--ease-spring), left var(--transition-fast) var(--ease-spring);
+}
+
+.input-group:focus-within::after {
+    width: 100%;
+    left: 0;
+}
+
+.icon { 
+    width: 32px; height: 32px;
+    color: var(--text-muted); 
+    margin-right: 25px;
+    display: flex; 
+    transition: color var(--transition-fast), transform var(--transition-fast) var(--ease-spring);
+}
+
+.input-group:focus-within .icon { 
+    color: var(--brand-primary);
+    transform: scale(1.15) rotate(5deg);
+    filter: drop-shadow(0 0 8px rgba(255, 94, 0, 0.6));
+}
+
+input {
+    background: transparent; 
+    border: none; 
+    outline: none;
+    color: var(--text-main); 
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    width: 100%;
+    height: 100%;
+}
+
+input::placeholder { 
+    color: var(--text-muted); 
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+input:focus::placeholder {
+    opacity: 0;
+    transform: translateX(10px);
+}
+
+/* =========================================
+   7. ERROR HANDLING
+   ========================================= */
+.error-msg {
+    color: var(--error-color); 
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 5px 0 30px 0;
+    opacity: 0; 
+    height: 25px;
+    transform: translateY(-10px);
+    transition: all var(--transition-fast) var(--ease-spring);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.error-msg::before {
+    content: "⚠️";
+    font-size: 18px;
+}
+
+.show-error { 
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+/* Shake Animation for Failures */
+.shake { 
+    animation: 
+        shake 0.5s cubic-bezier(.36,.07,.19,.97) both,
+        errorGlow 0.5s ease-in-out; 
+}
+
+/* =========================================
+   8. SUBMIT BUTTON (PREMIUM PLASMA EFFECT)
+   ========================================= */
+.submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    background-size: 200% 200%;
+    border: none; 
+    padding: 26px;
+    border-radius: 50px;
+    color: white; 
+    font-weight: 800; 
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer; 
+    transition: all var(--transition-fast) var(--ease-spring);
+    box-shadow: 
+        0 15px 35px rgba(255, 94, 0, 0.25),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Button hover plasma shift */
+.submit-btn:hover {
+    background-position: 100% 100%;
+    transform: translateY(-4px);
+    box-shadow: 
+        0 20px 45px rgba(255, 94, 0, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    letter-spacing: 6px;
+}
+
+.submit-btn:active { 
+    transform: translateY(2px);
+    box-shadow: 0 5px 15px rgba(255, 94, 0, 0.3);
+}
+
+/* Ripple/Glow effect wrapper inside button */
+.submit-btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent
+    );
+    transform: skewX(-20deg);
+    transition: all 0.6s var(--ease-out-expo);
+    z-index: -1;
+}
+
+.submit-btn:hover::before {
+    left: 150%;
+    transition: all 0.8s var(--ease-out-expo);
+}
+
+/* =========================================
+   9. HIGH-PERFORMANCE KEYFRAMES
+   ========================================= */
+@keyframes floatingOrbs {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes morphBlob {
+    0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    50% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
+    100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+}
+
+@keyframes panelEntrance {
+    0% { 
+        opacity: 0; 
+        transform: translateY(60px) scale(0.95) rotateX(10deg); 
+        filter: blur(10px);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1) rotateX(0deg); 
+        filter: blur(0px);
+    }
+}
+
+@keyframes glassSweep {
+    0%, 15% { left: -150%; }
+    30%, 100% { left: 200%; }
+}
+
+@keyframes borderSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+    40%, 60% { transform: translate3d(8px, 0, 0); }
+}
+
+@keyframes errorGlow {
+    0%, 100% { box-shadow: var(--glass-shadow); }
+    50% { box-shadow: 0 0 50px rgba(255, 59, 48, 0.4); border-color: rgba(255, 59, 48, 0.5); }
+}
+
+/* =========================================
+   10. RESPONSIVE ARCHITECTURE
+   ========================================= */
+
+/* Tablets & Small Laptops */
+@media screen and (max-width: 992px) {
+    .glass-panel { padding: 65px 50px; }
+    h2 { font-size: 28px; }
+    .input-group { height: 75px; }
+    input { font-size: 18px; }
+}
+
+/* Large Smartphones */
+@media screen and (max-width: 768px) {
+    .glass-panel {
+        padding: 50px 30px;
+        border-radius: 50px;
+    }
+    .circle-1 { width: 400px; height: 400px; }
+    .circle-2 { width: 600px; height: 600px; }
+    .blob-1 { display: none; /* Perf optimization */ }
+    
+    .logo-circle { width: 100px; height: 100px; }
+    .shield-icon { width: 50px; height: 50px; }
+    h2 { font-size: 24px; letter-spacing: 2px; }
+    .subtitle { font-size: 14px; letter-spacing: 4px; }
+    
+    .input-group { height: 65px; padding: 0 25px; border-radius: 50px; }
+    .icon { width: 24px; height: 24px; margin-right: 15px; }
+    input { font-size: 16px; }
+    
+    .submit-btn { padding: 20px; font-size: 18px; border-radius: 50px; }
+}
+
+/* Small Smartphones */
+@media screen and (max-width: 480px) {
+    .glass-panel { padding: 40px 20px; border: none; box-shadow: none; background: transparent; backdrop-filter: none; }
+    body { background: linear-gradient(to bottom, #1a0500, #0a0300); }
+    .bg-shape { opacity: 0.3; } /* Reduce background distraction */
+    .input-group { background: rgba(255,255,255,0.05); }
+}
+
+/* Accessibility: Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .bg-shape, .glass-panel::before, .logo-circle::before {
+        display: none !important;
+    }
+}

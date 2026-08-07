@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Safe</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="others.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="container">
+        <aside class="sidebar glass-panel animate-slide-right">
+            <div class="nav-item active" title="Dashboard">🏠</div>
+            <div class="nav-item" title="Alerts">⚠️</div>
+            <div class="nav-item" title="Zones">🏢</div>
+            <div class="nav-item" title="Analytics">📈</div>
+            <div class="nav-item" title="Settings">
+               <button class="settings-btn" id="open-settings" title="System Settings">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+</button>
+            </div>
+        </aside>
+        <main class="dashboard-content">
+            <div class="map-section glass-panel animate-fade-up" style="animation-delay: 0.1s;">
+                <div class="map-grid"></div>
+                <div class="sensor-node node-safe hover-glow" style="top: 25%; left: 30%;"></div>
+                <div class="sensor-node node-safe hover-glow" style="top: 20%; left: 60%;"></div>
+                <div class="sensor-node node-safe hover-glow" style="top: 65%; left: 25%;"></div>
+                <div class="sensor-node node-safe hover-glow" style="top: 80%; left: 45%;"></div>
+                
+                <div id="dynamicNodesContainer"></div>
+                
+                <div id="alarmsListContainer" style="position: absolute; top: 5%; left: 5%; display: flex; flex-direction: column; gap: 15px; z-index: 10; max-height: 90%; overflow-y: auto; padding-right: 10px;">
+                    </div>
+            </div>
+
+<div class="details-section animate-fade-up" style="animation-delay: 0.2s;">
+                <div class="glass-panel telemetry-card">
+                    <div class="panel-header">
+                        <span class="icon">🔥</span> FIRE DETAILS
+                    </div>
+                    
+                    <div class="data-group">
+                        <div class="data-label">TYPE OF FIRE:</div>
+                        <div class="data-value highlight-hover" id="fireTypeText">Scanning...</div>
+                    </div>
+
+                    <div class="data-group">
+                        <div class="data-label" style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--accent-red); font-size: 16px;">🌡️</span> TEMPERATURE:
+                        </div>
+                        <div class="data-value text-red pulse-text" id="tempText">--°C</div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 15px; height: 110px;">
+                            <div style="flex: 1; position: relative;">
+                                <canvas id="tempGauge"></canvas>
+                            </div>
+                            <div style="flex: 1.5; position: relative;">
+                                <canvas id="tempChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="data-group">
+                        <div class="data-label">SMOKE DENSITY:</div>
+                        <div class="data-value highlight-hover" id="smokeText">--%</div>
+                        <div class="chart-container" style="height: 100px;">
+                            <canvas id="smokeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-section animate-fade-up" style="animation-delay: 0.3s;">
+                <div class="glass-panel status-card">
+                    <div class="panel-header text-green" id="sysHeaderIcon">
+                        <span class="icon">✓</span> STATUS
+                    </div>
+                    <div class="status-list">
+                        <div class="status-item hover-lift">
+                            <div class="data-label">SYSTEM:</div>
+                            <div class="data-value" id="sysStatusText">STANDBY</div>
+                        </div>
+                        <div class="status-item hover-lift">
+                            <div class="data-label">SUPPRESSION:</div>
+                            <div class="data-value text-glow" id="supStatusText">ARMED</div>
+                        </div>
+                        <div class="status-item hover-lift">
+                            <div class="data-label">SPRINKLERS:</div>
+                            <div class="data-value text-glow" id="spkStatusText">STANDBY</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel status-card">
+                    <div class="panel-header">
+                        <span class="icon">🏢</span> BUILDING STATUS
+                    </div>
+                    <div class="status-list">
+                        <div class="status-item hover-lift">
+                            <div class="data-label">LEVEL 4/5:</div>
+                            <div class="data-value" id="evacStatusText">NORMAL</div>
+                        </div>
+                        <div class="status-item hover-lift">
+                            <div class="data-label">ALERTS:</div>
+                            <div class="data-value" id="alertStatusText">NONE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+
+<div id="settings-modal" class="modal-overlay hidden">
+    <div class="settings-glass-panel">
+        <div class="modal-header">
+            <h3>Settings</h3>
+            <button id="close-settings" class="close-btn">&times;</button>
+        </div>
+        
+        <div class="user-profile">
+            <div class="avatar-circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff5e00" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="user-details">
+                <div class="detail-label">ACTIVE EMAIL</div>
+                <div class="detail-value" id="profile-email">Loading...</div>
+                
+                <div class="detail-label" style="margin-top: 15px;">SYSTEM ID (UID)</div>
+                <div class="detail-value uid-text" id="profile-uid">...</div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button id="logout-btn" class="danger-btn">TERMINATE SESSION</button>
+        </div>
+    </div>
+</div>
+<div id="protocol-modal" class="modal-overlay hidden">
+    <div class="protocol-glass-panel">
+        <div class="modal-header bg-red">
+            <h3>⚠️ EMERGENCY EVACUATION PROTOCOL</h3>
+            <button id="close-protocol" class="close-btn">&times;</button>
+        </div>
+        
+        <div class="protocol-content">
+            <h4 id="protocol-zone-title">ZONE: [LOADING]</h4>
+            <ul class="survival-instructions">
+                <li><strong>IMMEDIATE ACTION:</strong> Evacuate immediately via the illuminated green routing paths on the map.</li>
+                <li><strong>HAZARD AVOIDANCE:</strong> Stay low to the ground to avoid smoke inhalation. Do NOT use elevators.</li>
+                <li><strong>SUPPRESSION:</strong> Automatic suppression gas deployment is active. Seal the area behind you.</li>
+                <li><strong>RALLY POINT:</strong> Proceed to the primary assembly point outside the main school gate. Do not re-enter the building.</li>
+            </ul>
+            <div class="status-warning">EMERGENCY SERVICES EN ROUTE. ETA: < 4 MINS.</div>
+        </div>
+
+        <div class="modal-footer">
+            <button id="ack-btn" class="ack-btn">ACKNOWLEDGE & INITIATE EVACUATION</button>
+        </div>
+    </div>
+</div>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="others.js"></script>
+</body>
+</html>
