@@ -1,28 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-// ==========================================
-// 1. FIREBASE CONFIGURATION
-// ==========================================
-const firebaseConfig = {
-    apiKey: "AIzaSyAAl85IvWatbWiLl7MkCNydknJsttGGktk",
-    authDomain: "fire-apsk.firebaseapp.com",
-    databaseURL: "https://fire-apsk-default-rtdb.firebaseio.com",
-    projectId: "fire-apsk",
-    storageBucket: "fire-apsk.firebasestorage.app",
-    messagingSenderId: "694099610438",
-    appId: "1:694099610438:web:92d00fce314b8b0e49b347",
-    measurementId: "G-27X628E1ZL"
+const firebaseConfig = {// ADD UR OWN FIREBASE CONFIG
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-
-// ==========================================
-// 2. AUTHENTICATION & SECURITY FIREWALL
-// ==========================================
 onAuthStateChanged(auth, (user) => {
     if (user) {
         document.getElementById('profile-email').innerText = user.email;
@@ -105,9 +89,6 @@ let currentSelectedZone = null;
 let activeThreatsGlobal = {};
 let worstThreatGlobal = null;
 
-// ==========================================
-// 4. CHART.JS CONFIGURATION
-// ==========================================
 Chart.defaults.color = '#86868b'; // Apple subtle gray
 Chart.defaults.font.family = "'Product Sans', 'Plus Jakarta Sans', sans-serif";
 Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
